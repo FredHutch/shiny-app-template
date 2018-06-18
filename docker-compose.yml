@@ -1,9 +1,0 @@
-version: '2'
-services:
-  {{appname}}:
-    image: dockerimages.fhcrc.org/{{appname}}:latest
-
-    labels:
-      io.rancher.container.pull_image: always
-
-    restart: always
