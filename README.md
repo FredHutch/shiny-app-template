@@ -110,3 +110,7 @@ Creating configs for myshinyapp
 ```
 
 The above command will create the following three files in the repository using the provided (-n or --name) short name of the application.
+
+- docker-compose.yml
+- rancher-compose.yml
+- circle.yml
