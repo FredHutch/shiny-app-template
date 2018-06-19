@@ -60,7 +60,7 @@ $ git push -u origin master
 Build the Docker image:
 
 ```bash
-$ docker build -t myapp:latest .
+$ docker build -t myshinyapp:latest .
 ```
 
 If the build fails due to a missing R dependency, add that dependency to the [fredhutch/r-shiny-base](https://github.com/FredHutch/r-shiny-base/blob/master/installRpackages.R) "installRpackages.R" source file and wait till the image has been built and pushed to the [r-shiny-base](https://hub.docker.com/r/fredhutch/r-shiny-base/) Docker repository (automated process).
@@ -70,7 +70,7 @@ If the build fails due to a missing dependency in the operating system, then add
 **8.** Run the container locally to ensure that your application is working correctly.
 
 ```bash
-$ docker run -d --name myshinyapp -p 7777:7777 myshinyapp
+$ docker run -d --name myshinyapp -p 7777:7777 myshinyapp:latest
 
 175d95092d4fa71eb8bc7de76d80d70eeb23d8a2fb47ac10d81ebc2699af8335
 ```
@@ -86,7 +86,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 If your app is not running, look at the logs to see if you can determine what is wrong (missing dependency, etc...):
 
 ```bash
-$ docker logs myapp
+$ docker logs myshinyapp
 ```
 
 After the container is running, you can point your web browser at http://localhost:7777 to test that your application is functioning correctly (curl http://localhost:7777).
