@@ -9,6 +9,11 @@ def main(appname):
     fc.flush()
     fc.close()
 
+    fc = open('.gitlab-ci.yml', 'w')
+    fc.write(gitlab_c.replace('{{appname}}', appname))
+    fc.flush()
+    fc.close()
+
     fc = open('rancher-compose.yml', 'w')
     fc.write(rancher_c.replace('{{appname}}', appname))
     fc.flush()
@@ -46,6 +51,36 @@ deployment:
       - docker push dockerimages.fhcrc.org/{{appname}}:latest
       - sleep 15
       - rancher-v0.6.2/rancher --url https://ponderosa.fhcrc.org --access-key $RANCHERAPI_KEY --secret-key $RANCHERAPI_SECRET up -d --pull --force-upgrade --confirm-upgrade --stack {{appname}} --file docker-compose.yml --rancher-file rancher-compose.yml
+"""
+
+gitlab_c = """
+before_script:
+    - curl -LO https://releases.rancher.com/cli/v0.6.2/rancher-linux-amd64-v0.6.2.tar.gz
+    - tar zxf rancher-linux-amd64-v0.6.2.tar.gz
+  
+  build_test:
+    script:
+      - docker build -t dockerimages.fhcrc.org/{{appname}}:latest .
+      - |
+          if docker ps -a|tr -s ' '|rev|cut -d ' ' -f 1|rev|grep -q {{appname}}
+          then
+            docker stop {{appname}} && docker rm --force {{appname}}
+          fi
+      - docker run -d --name {{appname}} -p 7777:7777 dockerimages.fhcrc.org/{{appname}}:latest
+      - sleep 15 && curl -sI  http://localhost:7777  |head -1|grep -q "200 OK"
+      - docker stop {{appname}} && docker rm --force {{appname}}
+  
+  
+  deploy:
+    only:
+      refs:
+          - master
+    script:
+      - docker login --username $DOCKERIMAGES_USER --password $DOCKERIMAGES_PASS https://dockerimages.fhcrc.org
+      - docker push dockerimages.fhcrc.org/{{appname}}:latest
+      - sleep 15
+      - rancher-v0.6.2/rancher --url https://ponderosa.fhcrc.org --access-key $RANCHERAPI_KEY --secret-key $RANCHERAPI_SECRET up -d --pull --force-upgrade --confirm-upgrade --stack {{appname}} --file docker-compose.yml --rancher-file rancher-compose.yml
+  
 """
 
 rancher_c = """version: '2'
