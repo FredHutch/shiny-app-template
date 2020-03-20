@@ -109,8 +109,9 @@ $ python generate-deploy-config.py --name myshinyapp
 Creating configs for myshinyapp
 ```
 
-The above command will create the following three files in the repository using the provided (-n or --name) short name of the application.
+The above command will create the following four files in the repository using the provided (-n or --name) short name of the application.
 
 - docker-compose.yml
 - rancher-compose.yml
 - circle.yml
+- .gitlab-ci-yml
