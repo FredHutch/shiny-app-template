@@ -60,15 +60,15 @@ before_script:
   
 build_test:
   script:
-    - docker build -t dockerimages.fhcrc.org/datafinderproto:latest .
+    - docker build -t dockerimages.fhcrc.org/{{appname}}:latest .
     - |
-        if docker ps -a|tr -s ' '|rev|cut -d ' ' -f 1|rev|grep -q datafinderproto
+        if docker ps -a|tr -s ' '|rev|cut -d ' ' -f 1|rev|grep -q {{appname}}
         then
-        docker stop datafinderproto && docker rm --force datafinderproto
+        docker stop {{appname}} && docker rm --force {{appname}}
         fi
-    - docker run -d --name datafinderproto -p 3838:3838 dockerimages.fhcrc.org/datafinderproto:latest
+    - docker run -d --name {{appname}} -p 3838:3838 dockerimages.fhcrc.org/{{appname}}:latest
     - sleep 15 && curl -sI  http://localhost:3838  |head -1|grep -q "200 OK"
-    - docker stop datafinderproto && docker rm --force datafinderproto
+    - docker stop {{appname}} && docker rm --force {{appname}}
   
   
 deploy:
@@ -77,9 +77,9 @@ deploy:
        - master
   script:
     - docker login --username $DOCKERIMAGES_USER --password $DOCKERIMAGES_PASS https://dockerimages.fhcrc.org
-    - docker push dockerimages.fhcrc.org/datafinderproto:latest
+    - docker push dockerimages.fhcrc.org/{{appname}}:latest
     - sleep 15
-    - rancher-v0.6.2/rancher --url https://ponderosa.fhcrc.org --access-key $RANCHERAPI_KEY --secret-key $RANCHERAPI_SECRET up -d --pull --force-upgrade --confirm-upgrade --stack datafinderproto --file docker-compose.yml --rancher-file rancher-compose.yml
+    - rancher-v0.6.2/rancher --url https://ponderosa.fhcrc.org --access-key $RANCHERAPI_KEY --secret-key $RANCHERAPI_SECRET up -d --pull --force-upgrade --confirm-upgrade --stack {{appname}} --file docker-compose.yml --rancher-file rancher-compose.yml
   
 """
 
