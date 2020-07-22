@@ -72,6 +72,7 @@ build_test:
   
   
 deploy:
+  stage: deploy
   only:
     refs:
        - master
