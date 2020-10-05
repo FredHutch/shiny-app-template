@@ -4,11 +4,6 @@ import sys
 def main(appname):
     print("\nCreating configs for %s\n" % appname) 
     
-    fc = open('circle.yml', 'w')
-    fc.write(circle_c.replace('{{appname}}', appname))
-    fc.flush()
-    fc.close()
-
     fc = open('.gitlab-ci.yml', 'w')
     fc.write(gitlab_c.replace('{{appname}}', appname))
     fc.flush()
@@ -24,34 +19,6 @@ def main(appname):
     fc.flush()
     fc.close()
 
-circle_c = """machine:
-  services:
-    - docker
-  environment:
-    BUILD_HOST: circle-build01.fhcrc.org
-
-dependencies:
-  override:
-    - curl -LO https://releases.rancher.com/cli/v0.6.2/rancher-linux-amd64-v0.6.2.tar.gz
-    - tar zxf rancher-linux-amd64-v0.6.2.tar.gz
-    - ls -lh
-    - docker build -t dockerimages.fhcrc.org/{{appname}}:latest .
-
-test:
-  override:
-    - docker run -d --name {{appname}} -p 7777:7777 dockerimages.fhcrc.org/{{appname}}:latest
-    - sleep 15 && curl --retry 10 --retry-delay 5 -v http://${BUILD_HOST}:7777
-    - docker stop {{appname}} && docker rm --force {{appname}}
-
-deployment:
-  prod:
-    branch: master
-    commands:
-      - docker login --email fredhutch@fhcrc.org --username $DOCKERIMAGES_USER --password $DOCKERIMAGES_PASS https://dockerimages.fhcrc.org
-      - docker push dockerimages.fhcrc.org/{{appname}}:latest
-      - sleep 15
-      - rancher-v0.6.2/rancher --url https://ponderosa.fhcrc.org --access-key $RANCHERAPI_KEY --secret-key $RANCHERAPI_SECRET up -d --pull --force-upgrade --confirm-upgrade --stack {{appname}} --file docker-compose.yml --rancher-file rancher-compose.yml
-"""
 
 gitlab_c = """
 before_script:
