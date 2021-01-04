@@ -42,7 +42,7 @@ deploy:
   stage: deploy
   only:
     refs:
-       - master
+       - main
   script:
     - docker login --username $DOCKERIMAGES_USER --password $DOCKERIMAGES_PASS https://dockerimages.fhcrc.org
     - docker push dockerimages.fhcrc.org/{{appname}}:latest
