@@ -2,6 +2,10 @@ import optparse
 import sys 
 
 def main(appname):
+    if "_" in appname:
+        print("Error: App name cannot contain underscores")
+        sys.exit(1)
+
     print("\nCreating configs for %s\n" % appname) 
     
     fc = open('.gitlab-ci.yml', 'w')
