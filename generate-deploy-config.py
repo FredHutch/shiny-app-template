@@ -43,7 +43,13 @@ def main(args):
         args['org'] = "fredhutch"
       elif args['fqdn'].endswith(".fhcrc.org"):
         args['org'] = "fhcrc"
-      with open(f"{args['fqdn']}.conf", "w") as fc:
+
+      conf_file = f"{args['fqdn']}.conf"
+      if os.path.exists(conf_file) and not args['overwrite']:
+        print(f"Error: {conf_file} already exists. Use -o to overwrite.")
+        sys.exit(1)
+
+      with open(conf_file, "w") as fc:
         fc.write(nginx_c.format(**args))
 
 gitlab_c = """
