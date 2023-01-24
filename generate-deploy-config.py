@@ -86,7 +86,7 @@ deploy:
   stage: deploy
   only:
     refs:
-        - master
+        - main
   script:
     - docker tag sc-registry.fredhutch.org/{name}:test sc-registry.fredhutch.org/{name}:latest
     - docker push sc-registry.fredhutch.org/{name}:latest
