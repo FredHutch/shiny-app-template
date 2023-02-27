@@ -137,6 +137,11 @@ server {{
         proxy_ssl_server_name on;
         proxy_pass https://{fqdn};
         {auth}
+        # when app uses runApp() (not Shiny Server)
+        # you must set proxy_read_timeout (as below). See
+        # https://support.posit.co/hc/en-us/articles/213733868-Running-Shiny-Server-with-a-Proxy
+        # TODO - uncomment this line if necessary:
+        # proxy_read_timeout 20d;
     }}
 }}
 """.strip()
