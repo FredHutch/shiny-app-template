@@ -53,6 +53,9 @@ def main(args):
         fc.write(nginx_c.format(**args))
 
 gitlab_c = """
+variables:
+  CI_DEBUG_SERVICES: "true"
+
 before_script:
   - apk update
   - apk --no-cache add py3-pip python3 curl
