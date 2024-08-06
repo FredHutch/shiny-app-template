@@ -59,6 +59,8 @@ variables:
 before_script:
   - apk update
   - apk --no-cache add py3-pip python3 curl
+  - python3 -m venv $HOME/.venv
+  - export PATH=$HOME/.venv/bin:$PATH
   - pip3 install pyyaml --break-system-packages
   - curl -O https://raw.githubusercontent.com/FredHutch/swarm-build-helper/main/build_helper.py 
   # below is from https://stackoverflow.com/a/65810302/470769
