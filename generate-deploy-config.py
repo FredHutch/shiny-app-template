@@ -61,7 +61,7 @@ before_script:
   - apk --no-cache add py3-pip python3 curl
   - python3 -m venv $HOME/.venv
   - export PATH=$HOME/.venv/bin:$PATH
-  - pip3 install pyyaml --break-system-packages
+  - pip3 install pyyaml
   - curl -O https://raw.githubusercontent.com/FredHutch/swarm-build-helper/main/build_helper.py 
   # below is from https://stackoverflow.com/a/65810302/470769
   - mkdir -p $HOME/.docker
