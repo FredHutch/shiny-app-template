@@ -108,7 +108,7 @@ services:
   {name}:
     image: sc-registry.fredhutch.org/{name}:latest
     networks:
-      - proxy
+      - sc-swarm-net
     deploy:
       restart_policy:
         condition: on-failure
@@ -121,7 +121,7 @@ services:
         - "traefik.http.routers.{name}.tls=true"
 
 networks:
-  proxy:
+  sc-swarm-net:
     external: true
 """.strip()
 
