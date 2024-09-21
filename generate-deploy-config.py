@@ -9,6 +9,10 @@ def main(args):
         print("Error: App name cannot contain underscores")
         sys.exit(1)
 
+    if "_" in args['fqdn']:
+        print("Error: FQDN cannot contain underscores")
+        sys.exit(1)
+    
     if not args['fqdn'].endswith('.fredhutch.org') and \
       not args['fqdn'].endswith('.fhcrc.org'):
         print("Error: FQDN must end with .fredhutch.org or .fhcrc.org")
