@@ -2,7 +2,7 @@
 
 import argparse
 import os
-import sys 
+import sys
 
 def main(args):
     if "_" in args['name']:
@@ -12,14 +12,14 @@ def main(args):
     if "_" in args['fqdn']:
         print("Error: FQDN cannot contain underscores")
         sys.exit(1)
-    
+
     if not args['fqdn'].endswith('.fredhutch.org') and \
       not args['fqdn'].endswith('.fhcrc.org'):
         print("Error: FQDN must end with .fredhutch.org or .fhcrc.org")
         sys.exit(1)
 
-    print("\nCreating configs for %s\n" % args['name']) 
-    
+    print("\nCreating configs for %s\n" % args['name'])
+
     if os.path.exists('.gitlab-ci.yml') and not args['overwrite']:
         print("Error: .gitlab-ci.yml already exists. Use -o to overwrite.")
         sys.exit(1)
@@ -27,12 +27,26 @@ def main(args):
     with open('.gitlab-ci.yml', 'w') as fc:
       fc.write(gitlab_c.format(**args))
 
+    print("Wrote .gitlab-ci.yml")
+
+
     if os.path.exists('docker-compose.yml') and not args['overwrite']:
         print("Error: docker-compose.yml already exists. Use -o to overwrite.")
         sys.exit(1)
 
     with open("docker-compose.yml", "w") as fc:
       fc.write(docker_c.format(**args))
+
+    print("Wrote docker-compose.yml")
+
+    if os.path.exists('.dockerignore') and not args['overwrite']:
+        print("Error: .dockerignore already exists. Use -o to overwrite.")
+        sys.exit(1)
+
+    with open(".dockerignore", "w") as fc:
+      fc.write(dockerignore_c)
+
+    print("Wrote .dockerignore")
 
     if args['external']:
       if not args['no_websockets']:
@@ -56,6 +70,8 @@ def main(args):
       with open(conf_file, "w") as fc:
         fc.write(nginx_c.format(**args))
 
+        print(f"Wrote {conf_file}")
+
 gitlab_c = """
 variables:
   CI_DEBUG_SERVICES: "true"
@@ -66,7 +82,7 @@ before_script:
   - python3 -m venv $HOME/.venv
   - export PATH=$HOME/.venv/bin:$PATH
   - pip3 install pyyaml
-  - curl -O https://raw.githubusercontent.com/FredHutch/swarm-build-helper/main/build_helper.py 
+  - curl -O https://raw.githubusercontent.com/FredHutch/swarm-build-helper/main/build_helper.py
   # below is from https://stackoverflow.com/a/65810302/470769
   - mkdir -p $HOME/.docker
   - echo $DOCKER_AUTH_CONFIG > $HOME/.docker/config.json
@@ -85,7 +101,7 @@ build:
 
 test:
   stage: test
-  services: 
+  services:
     - name: sc-registry.fredhutch.org/{name}:test
       alias: {name}
   script:
@@ -167,6 +183,13 @@ auth_c = """
         auth_basic "ShinyApp";
         auth_basic_user_file "/etc/nginx/auth_repos/{github_repo}/{auth_file_path}";
 """.strip()
+
+dockerignore_c = """.git/
+docker-compose.yml
+Dockerfile
+docker-compose*.yml
+Dockerfile*
+"""
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(
