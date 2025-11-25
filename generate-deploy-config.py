@@ -189,6 +189,7 @@ docker-compose.yml
 Dockerfile
 docker-compose*.yml
 Dockerfile*
+.gitlab-ci.yml
 """
 
 if __name__ == "__main__":
