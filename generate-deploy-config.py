@@ -133,6 +133,7 @@ services:
       restart_policy:
         condition: on-failure
       labels:
+        - "org.fredhutch.app.owner={owner_email}"
         - "traefik.enable=true"
         - "traefik.http.routers.{name}.rule=Host(`{fqdn}`)"
         - "traefik.http.routers.{name}-secured.rule=Host(`{fqdn}`)"
@@ -216,6 +217,7 @@ in swarm-proxy:/etc/nginx/auth_repos.""")
       )
     p.add_argument('-o', '--overwrite', action='store_true',
       help="overwrite existing files", default=False)
+    p.add_argument('-r', '--owner-email', action='store', help="email of owner", required=True)
     p.add_argument('-e', '--external', action='store_true', default=False,
       help="App will be deployed externally. Generates proxy nginx config.")
     p.add_argument('-w', '--no-websockets', action='store_true', help='does not use websockets, only needed if EXTERNAL==True')
