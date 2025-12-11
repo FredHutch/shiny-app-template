@@ -96,16 +96,16 @@ stages:
 build:
   stage: build
   script:
-    - docker build -t sc-registry.fredhutch.org/{name}:test .
-    - docker push sc-registry.fredhutch.org/{name}:test
+    - docker build -t sc-registry.fredhutch.org/{name}:$CI_COMMIT_SHORT_SHA .
 
 test:
   stage: test
   services:
-    - name: sc-registry.fredhutch.org/{name}:test
+    - name: sc-registry.fredhutch.org/{name}:$CI_COMMIT_SHORT_SHA
       alias: {name}
   script:
     - sleep 15 && curl -sI  http://{name}:{port}  |head -1|grep -q "200 OK"
+    - if [[ -n "$CI_COMMIT_BRANCH" ]] && [[ "$CI_COMMIT_BRANCH" != "main" ]]; then docker rmi sc-registry.fredhutch.org/wdl2dag:$CI_COMMIT_SHORT_SHA ; fi
 
 deploy:
   stage: deploy
@@ -113,8 +113,9 @@ deploy:
     refs:
         - main
   script:
-    - docker tag sc-registry.fredhutch.org/{name}:test sc-registry.fredhutch.org/{name}:latest
+    - docker tag sc-registry.fredhutch.org/{name}:$CI_COMMIT_SHORT_SHA sc-registry.fredhutch.org/{name}:latest
     - docker push sc-registry.fredhutch.org/{name}:latest
+    - docker rmi sc-registry.fredhutch.org/{name}:$CI_COMMIT_SHORT_SHA
     - sleep 15
     - echo $SC_SWARM_CICD_SSH_KEY | base64 -d > ./sc_swarm_cicd_ssh_key
     - chmod 0400 ./sc_swarm_cicd_ssh_key
