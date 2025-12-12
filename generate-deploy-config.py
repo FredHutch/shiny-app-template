@@ -105,7 +105,7 @@ test:
       alias: {name}
   script:
     - sleep 15 && curl -sI  http://{name}:{port}  |head -1|grep -q "200 OK"
-    - if [[ -n "$CI_COMMIT_BRANCH" ]] && [[ "$CI_COMMIT_BRANCH" != "main" ]]; then docker rmi sc-registry.fredhutch.org/wdl2dag:$CI_COMMIT_SHORT_SHA ; fi
+    - if [[ -n "$CI_COMMIT_BRANCH" ]] && [[ "$CI_COMMIT_BRANCH" != "main" ]]; then docker rmi sc-registry.fredhutch.org/{name}:$CI_COMMIT_SHORT_SHA ; fi
 
 deploy:
   stage: deploy
